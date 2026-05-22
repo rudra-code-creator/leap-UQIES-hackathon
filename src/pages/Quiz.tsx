@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Jumpy } from "@/components/Jumpy";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { defaultQuiz, type QuizState } from "@/lib/quiz-types";
 import { toast } from "sonner";
 import {
@@ -88,12 +89,15 @@ const Quiz = () => {
             <Jumpy size="xs" animate="float" />
             <span className="font-display text-lg font-black">Leap Sign-up</span>
           </div>
-          <button
-            onClick={() => navigate("/")}
-            className="text-sm font-bold text-muted-foreground hover:text-foreground"
-          >
-            Cancel
-          </button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              onClick={() => navigate("/")}
+              className="text-sm font-bold text-muted-foreground hover:text-foreground"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       </header>
 

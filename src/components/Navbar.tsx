@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Menu } from "lucide-react";
 import { Jumpy } from "@/components/Jumpy";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
@@ -48,6 +49,7 @@ export const Navbar = () => {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
+          <ThemeToggle />
           <div className="hidden items-center gap-2 rounded-full border-2 border-border bg-surface px-3 py-1.5 lg:flex">
             <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Lvl</span>
             <span className="font-display text-sm font-black">4</span>
@@ -59,14 +61,20 @@ export const Navbar = () => {
           </Link>
         </div>
 
+        <div className="flex items-center gap-1 md:hidden">
+          <ThemeToggle />
         <Sheet open={open} onOpenChange={setOpen}>
-          <SheetTrigger asChild className="md:hidden">
+          <SheetTrigger asChild>
             <Button variant="ghost" size="icon" aria-label="Open menu">
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
           <SheetContent side="right" className="w-72">
             <div className="mt-8 flex flex-col gap-1">
+              <div className="mb-4 flex items-center justify-between px-4">
+                <span className="text-sm font-bold text-muted-foreground">Theme</span>
+                <ThemeToggle />
+              </div>
               {links.map((l) => (
                 <NavLink
                   key={l.to}
@@ -85,6 +93,7 @@ export const Navbar = () => {
             </div>
           </SheetContent>
         </Sheet>
+        </div>
       </div>
     </header>
   );

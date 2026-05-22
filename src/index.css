@@ -83,6 +83,14 @@
     --ring: 181 62% 49%;
     --surface: 195 35% 12%;
     --surface-soft: 195 35% 15%;
+    --sidebar-background: 195 35% 10%;
+    --sidebar-foreground: 187 25% 93%;
+    --sidebar-primary: 181 62% 49%;
+    --sidebar-primary-foreground: 195 47% 8%;
+    --sidebar-accent: 195 25% 18%;
+    --sidebar-accent-foreground: 187 25% 93%;
+    --sidebar-border: 195 25% 22%;
+    --sidebar-ring: 181 62% 49%;
   }
 }
 
@@ -93,6 +101,10 @@
 
   html {
     font-family: 'Nunito Sans', system-ui, sans-serif;
+  }
+
+  html.dark {
+    color-scheme: dark;
   }
 
   body {
