@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { AnimatedPage } from "@/components/AnimatedPage";
 import { Brain, Sparkles, Send, RefreshCw, Key, Plus, Upload, FileText, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -344,7 +345,7 @@ const CareerVision = () => {
   };
 
   return (
-    <div className="container py-8 md:py-10 space-y-6">
+    <AnimatedPage className="container py-8 md:py-10 space-y-6 overflow-x-hidden">
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
@@ -411,10 +412,10 @@ const CareerVision = () => {
             <Sparkles className="h-4 w-4 mr-2 inline" /> AI Career Predictor
           </TabsTrigger>
           <TabsTrigger value="coach" className="rounded-xl px-4 py-2 font-display text-sm font-bold data-[state=active]:bg-foreground data-[state=active]:text-background transition-all">
-            <Jumpy size="xs" animate="none" /> <span className="ml-2">Jumpy Buddy Coach</span>
+            🐸 Jumpy Buddy Coach
           </TabsTrigger>
           <TabsTrigger value="roaster" className="rounded-xl px-4 py-2 font-display text-sm font-bold data-[state=active]:bg-foreground data-[state=active]:text-background transition-all">
-            <Flame className="h-4 w-4 mr-2 inline text-coral" /> AI Resume Roaster 🔥
+            <Flame className="h-4 w-4 mr-2 inline" /> AI Resume Roaster 🔥
           </TabsTrigger>
         </TabsList>
 
@@ -641,7 +642,7 @@ const CareerVision = () => {
           </section>
         </TabsContent>
       </Tabs>
-    </div>
+    </AnimatedPage>
   );
 };
 
