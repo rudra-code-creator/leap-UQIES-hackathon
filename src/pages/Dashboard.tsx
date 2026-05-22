@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Check, ChevronRight, Calendar, ListTodo, Bell, MapPin, Users, Sparkles } from "lucide-react";
+import { Check, ChevronRight, Calendar, ListTodo, Bell, MapPin, Users, Sparkles, Newspaper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AchievementBadges } from "@/components/AchievementBadges";
