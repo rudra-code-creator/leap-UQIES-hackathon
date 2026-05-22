@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Jumpy } from "@/components/Jumpy";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { defaultQuiz, type QuizState } from "@/lib/quiz-types";
+import { progressionStore } from "@/lib/progression-store";
 import { toast } from "sonner";
 import {
   Select,
@@ -69,6 +70,7 @@ const Quiz = () => {
 
     // Save user configuration to session storage for results matching
     sessionStorage.setItem("leap-quiz", JSON.stringify(data));
+    progressionStore.grantQuizComplete();
     toast.success("Account created successfully! Finding your matches... 🐸");
     navigate("/results");
   };

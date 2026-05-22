@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { progressionStore } from "@/lib/progression-store";
 
 export interface Person { name: string; role?: string; linkedin?: string; }
 export interface Experience {
@@ -213,15 +214,21 @@ function setAll(next: Experience[]) {
 export const experiencesStore = {
   list: () => getAll(),
   get: (id: string) => getAll().find((e) => e.id === id),
-  add: (exp: Experience) => setAll([exp, ...getAll()]),
+  add: (exp: Experience) => {
+    setAll([exp, ...getAll()]);
+    progressionStore.grantJourneyLog(exp.id);
+  },
   update: (id: string, patch: Partial<Experience>) =>
     setAll(getAll().map((e) => (e.id === id ? { ...e, ...patch } : e))),
   markPosted: (id: string, format: keyof Experience["posted"]) => {
+    const exp = getAll().find((e) => e.id === id);
+    const alreadyPosted = exp?.posted[format];
     setAll(
       getAll().map((e) =>
         e.id === id ? { ...e, posted: { ...e.posted, [format]: true } } : e,
       ),
     );
+    if (!alreadyPosted) progressionStore.grantContentPosted(id, format);
   },
 };
 
