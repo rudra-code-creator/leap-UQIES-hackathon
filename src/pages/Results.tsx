@@ -7,6 +7,8 @@ import { JumpyLauncher } from "@/components/JumpyLauncher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { defaultQuiz, type QuizState } from "@/lib/quiz-types";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
+import { AnimatedPage } from "@/components/AnimatedPage";
 
 const Results = () => {
   const navigate = useNavigate();
@@ -23,7 +25,7 @@ const Results = () => {
   const firstName = useMemo(() => (data.name?.split(" ")[0] || "friend"), [data.name]);
 
   return (
-    <div className="min-h-screen bg-background pb-32">
+    <AnimatedPage className="min-h-screen bg-background pb-32 overflow-x-hidden">
       {/* Top */}
       <header className="container flex items-center justify-between py-6">
         <button onClick={() => navigate("/")} className="flex items-center gap-2">
@@ -39,17 +41,34 @@ const Results = () => {
       {/* Hero / transformation */}
       <section className="container">
         <div className="mx-auto max-w-3xl text-center">
-          <div className="inline-flex items-center gap-2 rounded-full bg-coral/15 px-4 py-1.5">
+          <motion.div 
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 100, damping: 15 }}
+            className="inline-flex items-center gap-2 rounded-full bg-coral/15 px-4 py-1.5"
+          >
             <Sparkles className="h-4 w-4 text-coral" />
             <span className="text-xs font-bold uppercase tracking-wider text-coral">Your matches are ready</span>
-          </div>
-          <h1 className="mt-4 font-display text-4xl font-black md:text-6xl">
+          </motion.div>
+          
+          <motion.h1 
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+            className="mt-4 font-display text-4xl font-black md:text-6xl"
+          >
             Here's where you want to be,{" "}
             <span className="text-primary">{firstName}</span>…
-          </h1>
-          <p className="mt-3 text-muted-foreground md:text-lg">
+          </motion.h1>
+          
+          <motion.p 
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="mt-3 text-muted-foreground md:text-lg"
+          >
             …and here's where you are now. Let's build the path between them.
-          </p>
+          </motion.p>
         </div>
 
         {/* Transformation cards */}
@@ -60,32 +79,45 @@ const Results = () => {
             subtitle="Future you"
             tone="dream"
             visible
+            delay={0.3}
           />
-          <TransformCard
-            label="Current You Jumpy"
-            title={data.currentEducation ? `Current ${data.currentEducation}` : "Curious explorer"}
-            subtitle="Where you are now"
-            tone="current"
-            visible={transformed}
-          />
+          <AnimatePresence>
+            {transformed && (
+              <TransformCard
+                label="Current You Jumpy"
+                title={data.currentEducation ? `Current ${data.currentEducation}` : "Curious explorer"}
+                subtitle="Where you are now"
+                tone="current"
+                visible={transformed}
+                delay={0}
+              />
+            )}
+          </AnimatePresence>
         </div>
       </section>
 
       {/* Sticky CTA */}
-      <div className="fixed bottom-0 left-0 right-0 border-t-2 border-border bg-surface/95 backdrop-blur">
+      <motion.div 
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, type: "spring", stiffness: 80, damping: 15 }}
+        className="fixed bottom-0 left-0 right-0 border-t-2 border-border bg-surface/95 backdrop-blur z-20 shadow-lg"
+      >
         <div className="container flex max-w-5xl items-center justify-between py-4">
           <div className="text-sm">
             <div className="font-display font-extrabold">Ready to commit?</div>
             <div className="text-xs text-muted-foreground">Start building your step-by-step roadmap now.</div>
           </div>
-          <Button variant="hero" size="lg" onClick={() => navigate("/dashboard")}>
-            Go to dashboard
-            <ArrowRight />
-          </Button>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Button variant="hero" size="lg" onClick={() => navigate("/dashboard")}>
+              Go to dashboard
+              <ArrowRight />
+            </Button>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
       <JumpyLauncher />
-    </div>
+    </AnimatedPage>
   );
 };
 
@@ -97,18 +129,23 @@ const TransformCard = ({
   subtitle,
   tone,
   visible,
+  delay = 0,
 }: {
   label: string;
   title: string;
   subtitle: string;
   tone: "dream" | "current";
   visible: boolean;
+  delay?: number;
 }) => (
-  <div
+  <motion.div
+    initial={{ opacity: 0, y: 30, scale: 0.95 }}
+    animate={{ opacity: 1, y: 0, scale: 1 }}
+    transition={{ type: "spring", stiffness: 70, damping: 15, delay }}
+    whileHover={{ y: -5, scale: 1.02 }}
     className={cn(
-      "relative overflow-hidden rounded-3xl border-2 p-8 text-center transition-all duration-700",
+      "relative overflow-hidden rounded-3xl border-2 p-8 text-center transition-shadow duration-300 shadow-sm hover:shadow-md",
       tone === "dream" ? "border-secondary bg-secondary/15" : "border-border bg-surface",
-      visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",
     )}
   >
     {tone === "dream" && (
@@ -125,6 +162,7 @@ const TransformCard = ({
         ✨ Aspirational
       </div>
     )}
-  </div>
+  </motion.div>
 );
+
 export default Results;
