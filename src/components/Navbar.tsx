@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { Menu } from "lucide-react";
+import { Menu, Sparkles } from "lucide-react";
 import { Jumpy } from "@/components/Jumpy";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,7 @@ const links = [
 export const Navbar = () => {
   const [open, setOpen] = useState(false);
   const location = useLocation();
-  const { level } = useProgression();
+  const { level, xp } = useProgression();
 
   const linkCls = ({ isActive }: { isActive: boolean }) =>
     cn(
@@ -52,9 +52,20 @@ export const Navbar = () => {
 
         <div className="hidden items-center gap-2 md:flex">
           <ThemeToggle />
-          <div className="hidden items-center gap-2 rounded-full border-2 border-border bg-surface px-3 py-1.5 lg:flex">
+          <Link
+            to="/about-me"
+            className="flex items-center gap-2 rounded-full border-2 border-coral bg-coral px-3.5 py-1.5 shadow-[0_2px_0_0_hsl(var(--foreground)/0.12)] transition-transform hover:scale-[1.02]"
+            aria-label={`${xp.toLocaleString()} experience points, level ${level}`}
+          >
+            <Sparkles className="h-4 w-4 shrink-0 text-coral-foreground" aria-hidden />
+            <span className="font-display text-xl font-black tabular-nums leading-none text-coral-foreground">
+              {xp.toLocaleString()}
+            </span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-coral-foreground/90">XP</span>
+          </Link>
+          <div className="hidden items-center gap-2 rounded-full border-2 border-secondary bg-secondary/20 px-3 py-1.5 lg:flex">
             <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Lvl</span>
-            <span className="font-display text-sm font-black">{level}</span>
+            <span className="font-display text-sm font-black text-foreground">{level}</span>
           </div>
           <Link to="/about-me">
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary font-display text-sm font-black text-foreground">
@@ -63,7 +74,17 @@ export const Navbar = () => {
           </Link>
         </div>
 
-        <div className="flex items-center gap-1 md:hidden">
+        <div className="flex items-center gap-2 md:hidden">
+          <Link
+            to="/about-me"
+            className="flex items-center gap-1.5 rounded-full border-2 border-coral bg-coral px-2.5 py-1 shadow-[0_2px_0_0_hsl(var(--foreground)/0.12)]"
+            aria-label={`${xp.toLocaleString()} experience points`}
+          >
+            <span className="font-display text-base font-black tabular-nums leading-none text-coral-foreground">
+              {xp.toLocaleString()}
+            </span>
+            <span className="text-[9px] font-bold uppercase text-coral-foreground/90">XP</span>
+          </Link>
           <ThemeToggle />
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
@@ -73,6 +94,18 @@ export const Navbar = () => {
           </SheetTrigger>
           <SheetContent side="right" className="w-72">
             <div className="mt-8 flex flex-col gap-1">
+              <Link
+                to="/about-me"
+                onClick={() => setOpen(false)}
+                className="mx-4 mb-4 flex items-center justify-center gap-2 rounded-2xl border-2 border-coral bg-coral px-4 py-3"
+              >
+                <Sparkles className="h-5 w-5 text-coral-foreground" aria-hidden />
+                <span className="font-display text-2xl font-black tabular-nums text-coral-foreground">
+                  {xp.toLocaleString()}
+                </span>
+                <span className="text-xs font-bold uppercase tracking-wider text-coral-foreground/90">XP</span>
+                <span className="text-xs font-bold text-coral-foreground/80">· Lvl {level}</span>
+              </Link>
               <div className="mb-4 flex items-center justify-between px-4">
                 <span className="text-sm font-bold text-muted-foreground">Theme</span>
                 <ThemeToggle />
