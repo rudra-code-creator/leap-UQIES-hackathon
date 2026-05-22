@@ -8,6 +8,10 @@ import { StreakPanel } from "@/components/StreakPanel";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { AnimatedPage } from "@/components/AnimatedPage";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 
 const FILTERS: Array<{ label: string; value: "All" | Experience["type"] }> = [
   { label: "All", value: "All" },
@@ -222,28 +226,12 @@ const JourneyLog = () => {
                 </div>
               </motion.button>
 
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="rounded-3xl border-2 border-border bg-surface p-4"
-              >
-                <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Brand streak</div>
-                <div className="mt-2 font-display text-3xl font-black">{thisMonth}</div>
-                <div className="text-xs text-muted-foreground">experiences logged in 2026</div>
-                <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted">
-                  <motion.div
-                    className="h-full rounded-full bg-secondary"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${Math.min(100, thisMonth * 12)}%` }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                  />
-                </div>
-                {unsharedCount > 0 && (
-                  <p className="mt-3 text-xs text-muted-foreground">
-                    <span className="font-bold text-coral">{unsharedCount} unshared</span> · turn them into content
-                  </p>
-                )}
-              </motion.div>
+              <StreakPanel />
+              {unsharedCount > 0 && (
+                <p className="rounded-2xl border-2 border-border bg-surface px-3 py-2 text-xs text-muted-foreground">
+                  <span className="font-bold text-coral">{unsharedCount} unshared</span> · turn them into content
+                </p>
+              )}
             </aside>
           </div>
         </TabsContent>
@@ -418,25 +406,35 @@ const JourneyLog = () => {
               <p className="text-xs text-muted-foreground">
                 Select one of your logged experiences to draft targeted, professional social media posts.
               </p>
+              <div>
+                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground block mb-2">Select Win</label>
+                <select
+                  value={studioExpId}
+                  onChange={(e) => {
+                    setStudioExpId(e.target.value);
+                    setDrafts(null);
+                  }}
+                  className="w-full rounded-xl border-2 border-border bg-background px-3 py-2.5 text-xs font-bold focus-visible:outline-none focus-visible:border-secondary"
+                >
+                  {experiences.map((exp) => (
+                    <option key={exp.id} value={exp.id}>
+                      {exp.title} ({exp.type})
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-        {/* Right rail */}
-        <aside className="hidden space-y-4 lg:block">
-          <button className="group flex w-full items-center gap-3 rounded-3xl border-2 border-border bg-surface p-4 text-left transition-colors hover:border-coral">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-coral text-coral-foreground">
-              <Mic className="h-5 w-5" />
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                <Button
+                  onClick={generateSocialPosts}
+                  disabled={isGenerating || !studioExpId}
+                  variant="hero"
+                  className="w-full font-black py-5"
+                >
+                  {isGenerating ? "Writing Drafts..." : "Generate AI Drafts"}
+                </Button>
+              </motion.div>
             </div>
-            <div>
-              <div className="font-display text-sm font-extrabold">Quick voice log</div>
-              <div className="text-xs text-muted-foreground">Tap to record (coming soon)</div>
-            </div>
-          </button>
-
-          <StreakPanel />
-          {unsharedCount > 0 && (
-            <p className="rounded-2xl border-2 border-border bg-surface px-3 py-2 text-xs text-muted-foreground">
-              <span className="font-bold text-coral">{unsharedCount} unshared</span> · turn them into content
-            </p>
-          )}
 
             {/* Generated output */}
             <div className="space-y-5">

@@ -8,14 +8,13 @@ import { JumpyNudge } from "@/components/JumpyNudge";
 import { mockChecklist, mockNews, mockPathways, mockUser } from "@/lib/mock-data";
 import { getGamificationNudge } from "@/lib/gamification-nudges";
 import { useExperiences } from "@/lib/experiences-store";
-import { progressionStore, useProgression } from "@/lib/progression-store";
 import { cn } from "@/lib/utils";
+import { progressionStore, useProgression } from "@/lib/progression-store";
 import { motion } from "framer-motion";
 import { AnimatedPage } from "@/components/AnimatedPage";
 import { usePlannerTasks, roadmapStore } from "@/lib/roadmap-store";
 import { useDiscoverStates, discoverStore } from "@/lib/discover-store";
 import { supabase } from "@/integrations/supabase/client";
-import { useProgression } from "@/lib/progression-store";
 
 const steps = [
   { label: "Explorer", desc: "Discovering interests & matching paths" },
@@ -376,7 +375,7 @@ const Dashboard = () => {
               ))}
             </motion.div>
           </div>
-        </Card>
+        </section>
 
         {/* Checklist */}
         <Card title="Checklist" emoji="✅" action={<span className="text-xs font-bold text-muted-foreground">{checklistDone}/{mockChecklist.length} done</span>}>
@@ -429,8 +428,21 @@ const Dashboard = () => {
       <div className="mt-8">
         <JumpyNudge message={nudge.message} ctaLabel={nudge.ctaLabel} to={nudge.to} />
       </div>
-    </div>
+    </AnimatedPage>
   );
 };
+
+const Card = ({ title, emoji, action, children }: { title: string; emoji: string; action?: React.ReactNode; children: React.ReactNode }) => (
+  <section className="rounded-3xl border-2 border-border bg-surface p-5">
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-2">
+        <span className="text-xl">{emoji}</span>
+        <h2 className="font-display text-lg font-extrabold">{title}</h2>
+      </div>
+      {action}
+    </div>
+    {children}
+  </section>
+);
 
 export default Dashboard;
