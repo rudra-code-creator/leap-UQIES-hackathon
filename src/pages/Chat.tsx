@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Jumpy } from "@/components/Jumpy";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { mockChatHistory, type ChatMessage } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
@@ -46,8 +47,10 @@ const Chat = () => {
             <div className="text-[10px] font-bold uppercase text-secondary">● Online</div>
           </div>
         </div>
-        <Button variant="outline" size="sm" className="hidden md:inline-flex"><SplitSquareHorizontal className="h-4 w-4" /> Split view</Button>
-        <span className="md:hidden w-8" />
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <Button variant="outline" size="sm" className="hidden md:inline-flex"><SplitSquareHorizontal className="h-4 w-4" /> Split view</Button>
+        </div>
       </header>
 
       <div className="flex flex-1 overflow-hidden">

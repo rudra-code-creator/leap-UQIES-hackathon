@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Jumpy } from "@/components/Jumpy";
 import { JumpyLauncher } from "@/components/JumpyLauncher";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const features = [
   {
@@ -41,9 +42,12 @@ const Home = () => {
           <a href="#how" className="text-sm font-semibold text-muted-foreground hover:text-foreground">How it works</a>
           <a href="#about" className="text-sm font-semibold text-muted-foreground hover:text-foreground">About</a>
         </nav>
-        <Link to="/quiz">
-          <Button variant="outline" size="sm">Sign in</Button>
-        </Link>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <Link to="/quiz">
+            <Button variant="outline" size="sm">Sign in</Button>
+          </Link>
+        </div>
       </header>
 
       {/* Hero */}

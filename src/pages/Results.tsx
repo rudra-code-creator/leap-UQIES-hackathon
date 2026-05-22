@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Jumpy } from "@/components/Jumpy";
 import { JumpyLauncher } from "@/components/JumpyLauncher";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { defaultQuiz, type QuizState } from "@/lib/quiz-types";
 import { cn } from "@/lib/utils";
 
@@ -88,7 +89,10 @@ const Results = () => {
           <Jumpy size="xs" animate="none" />
           <span className="font-display text-xl font-extrabold">Leap</span>
         </button>
-        <Button variant="outline" size="sm" onClick={() => navigate("/quiz")}>Retake quiz</Button>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <Button variant="outline" size="sm" onClick={() => navigate("/quiz")}>Retake quiz</Button>
+        </div>
       </header>
 
       {/* Hero / transformation */}
