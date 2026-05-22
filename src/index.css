@@ -1,0 +1,128 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Leap design system. All colors HSL. No gradients. */
+
+@layer base {
+  :root {
+    /* Brand neutrals */
+    --background: 187 25% 93%;        /* #E9F2F3 */
+    --foreground: 195 47% 8%;         /* #0B191C */
+
+    --card: 0 0% 100%;
+    --card-foreground: 195 47% 8%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 195 47% 8%;
+
+    /* Dark accent as primary */
+    --primary: 199 51% 33%;           /* #286780 */
+    --primary-foreground: 0 0% 100%;
+
+    /* Light teal accent */
+    --secondary: 181 62% 49%;         /* #2EC6C9 */
+    --secondary-foreground: 195 47% 8%;
+
+    --muted: 187 20% 88%;
+    --muted-foreground: 195 15% 35%;
+
+    --accent: 181 62% 49%;            /* same teal */
+    --accent-foreground: 195 47% 8%;
+
+    /* Coral — used sparingly */
+    --coral: 8 64% 62%;               /* #DC6F63 */
+    --coral-foreground: 0 0% 100%;
+
+    --destructive: 8 64% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 215 17% 87%;            /* #D8DEE6 */
+    --input: 215 17% 87%;
+    --ring: 199 51% 33%;
+
+    --radius: 1rem;
+
+    /* Surfaces */
+    --surface: 0 0% 100%;
+    --surface-soft: 187 25% 96%;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 195 47% 8%;
+    --sidebar-primary: 199 51% 33%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 187 25% 93%;
+    --sidebar-accent-foreground: 195 47% 8%;
+    --sidebar-border: 215 17% 87%;
+    --sidebar-ring: 199 51% 33%;
+  }
+
+  .dark {
+    --background: 195 47% 8%;
+    --foreground: 187 25% 93%;
+    --card: 195 35% 12%;
+    --card-foreground: 187 25% 93%;
+    --popover: 195 35% 12%;
+    --popover-foreground: 187 25% 93%;
+    --primary: 181 62% 49%;
+    --primary-foreground: 195 47% 8%;
+    --secondary: 199 51% 33%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 195 25% 18%;
+    --muted-foreground: 187 15% 70%;
+    --accent: 181 62% 49%;
+    --accent-foreground: 195 47% 8%;
+    --coral: 8 64% 62%;
+    --coral-foreground: 0 0% 100%;
+    --destructive: 8 64% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 195 25% 22%;
+    --input: 195 25% 22%;
+    --ring: 181 62% 49%;
+    --surface: 195 35% 12%;
+    --surface-soft: 195 35% 15%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    font-family: 'Nunito Sans', system-ui, sans-serif;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "ss01", "cv01";
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Nunito', system-ui, sans-serif;
+    @apply font-extrabold tracking-tight;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: 'Nunito', system-ui, sans-serif;
+  }
+  .font-body {
+    font-family: 'Nunito Sans', system-ui, sans-serif;
+  }
+  .text-coral {
+    color: hsl(var(--coral));
+  }
+  .bg-coral {
+    background-color: hsl(var(--coral));
+  }
+  .bg-surface {
+    background-color: hsl(var(--surface));
+  }
+  .bg-surface-soft {
+    background-color: hsl(var(--surface-soft));
+  }
+}
