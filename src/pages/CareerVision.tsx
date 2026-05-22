@@ -446,7 +446,11 @@ const CareerVision = () => {
                         selectedEventIds.includes(e.id) ? "border-secondary bg-secondary/5 text-foreground" : "border-border bg-background text-muted-foreground"
                       )}
                     >
-                      <Checkbox checked={selectedEventIds.includes(e.id)} />
+                      <Checkbox
+                        checked={selectedEventIds.includes(e.id)}
+                        onCheckedChange={() => toggleEventSelection(e.id)}
+                        onClick={(e) => e.stopPropagation()}
+                      />
                       <span className="truncate flex-1">{e.title}</span>
                     </div>
                   ))

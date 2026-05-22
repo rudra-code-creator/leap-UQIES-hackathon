@@ -273,7 +273,10 @@ const Dashboard = () => {
                   >
                     <div className="flex items-start gap-3 flex-1 min-w-0">
                       <div className="pt-0.5" onClick={(e) => e.stopPropagation()}>
-                        <Checkbox checked={todo.done} onCheckedChange={() => toggleTodo(todo.id)} />
+                        <Checkbox
+                          checked={todo.done}
+                          onCheckedChange={(v) => roadmapStore.togglePlannerTask(todo.id, v === true)}
+                        />
                       </div>
                       <div className="min-w-0">
                         <span className={cn("text-sm font-bold leading-tight block text-foreground", todo.done && "text-muted-foreground line-through")}>

@@ -187,27 +187,27 @@ supabase.auth.getSession().then(({ data: { session } }) => {
 export const roadmapStore = {
   // Milestones Methods
   listMilestones: () => getMilestones(),
-  toggleMilestone: async (id: string) => {
+  toggleMilestone: async (id: string, done?: boolean) => {
     const list = getMilestones();
     const item = list.find((m) => m.id === id);
     if (!item) return;
 
-    const nextDone = !item.done;
+    const nextDone = done ?? !item.done;
+    const next = list.map((m) => (m.id === id ? { ...m, done: nextDone } : m));
 
     if (currentUser) {
       const { error } = await supabase
         .from("milestones")
         .update({ done: nextDone })
         .eq("id", id);
-      
+
       if (!error) {
-        milestoneCache = list.map((m) => (m.id === id ? { ...m, done: nextDone } : m));
+        milestoneCache = next;
         milestoneListeners.forEach((l) => l());
+        return;
       }
-      return;
     }
 
-    const next = list.map((m) => (m.id === id ? { ...m, done: nextDone } : m));
     setLocalMilestones(next);
   },
 
@@ -239,27 +239,27 @@ export const roadmapStore = {
 
   // Planner Tasks Methods
   listPlannerTasks: () => getPlanner(),
-  togglePlannerTask: async (id: string) => {
+  togglePlannerTask: async (id: string, done?: boolean) => {
     const list = getPlanner();
     const item = list.find((pt) => pt.id === id);
     if (!item) return;
 
-    const nextDone = !item.done;
+    const nextDone = done ?? !item.done;
+    const next = list.map((pt) => (pt.id === id ? { ...pt, done: nextDone } : pt));
 
     if (currentUser) {
       const { error } = await supabase
         .from("planner_tasks")
         .update({ done: nextDone })
         .eq("id", id);
-      
+
       if (!error) {
-        plannerCache = list.map((pt) => (pt.id === id ? { ...pt, done: nextDone } : pt));
+        plannerCache = next;
         plannerListeners.forEach((l) => l());
+        return;
       }
-      return;
     }
 
-    const next = list.map((pt) => (pt.id === id ? { ...pt, done: nextDone } : pt));
     setLocalPlanner(next);
   },
 

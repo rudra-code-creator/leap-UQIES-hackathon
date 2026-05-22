@@ -223,7 +223,10 @@ const Roadmap = () => {
                         >
                           <div className="flex items-start gap-3 flex-1 min-w-0">
                             <div className="pt-0.5" onClick={(e) => e.stopPropagation()}>
-                              <Checkbox checked={m.done} onCheckedChange={() => toggleMilestone(m.id)} />
+                              <Checkbox
+                                checked={m.done}
+                                onCheckedChange={(v) => toggleMilestone(m.id, v === true)}
+                              />
                             </div>
                             <div className="min-w-0">
                               <span className={cn("text-sm font-bold leading-snug block text-foreground", m.done && "text-muted-foreground line-through")}>
@@ -313,7 +316,10 @@ const Roadmap = () => {
                         >
                           <div className="flex items-center gap-3">
                             <div onClick={(e) => e.stopPropagation()}>
-                              <Checkbox checked={pt.done} onCheckedChange={() => togglePlannerTask(pt.id)} />
+                              <Checkbox
+                                checked={pt.done}
+                                onCheckedChange={(v) => togglePlannerTask(pt.id, v === true)}
+                              />
                             </div>
                             <span className={cn("text-sm font-bold text-foreground", pt.done && "text-muted-foreground line-through")}>
                               {pt.task}
@@ -570,6 +576,7 @@ const PhaseCard = ({ phase, index }: { phase: RoadmapPhase; index: number }) => 
                       <Checkbox
                         checked={checked}
                         onCheckedChange={(v) => progressionStore.toggleRoadmapTask(t.id, v === true)}
+                        onClick={(e) => e.stopPropagation()}
                       />
                       <span className={cn("text-sm font-semibold", checked && "text-muted-foreground line-through")}>
                         {t.label}
@@ -657,6 +664,7 @@ const Module = ({
               onCheckedChange={(v) =>
                 progressionStore.toggleRoadmapTask(`brand-${item.id}`, v === true)
               }
+              onClick={(e) => e.stopPropagation()}
             />
             <span className={cn(item.checked && "text-muted-foreground line-through")}>{item.label}</span>
           </li>
