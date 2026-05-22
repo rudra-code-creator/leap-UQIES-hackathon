@@ -5,15 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Jumpy } from "@/components/Jumpy";
-import { supabase } from "@/integrations/supabase/client";
 import { experiencesStore, type Experience } from "@/lib/experiences-store";
+import {
+  generateExperienceContent,
+  GenerateContentError,
+  type ContentFormat,
+} from "@/lib/generate-content";
 import { progressionStore } from "@/lib/progression-store";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
-type Format = "linkedin" | "instagram" | "tiktok" | "twitter" | "portfolio";
-
-const FORMATS: { id: Format; label: string; icon: React.ComponentType<{ className?: string }>; color: string }[] = [
+const FORMATS: { id: ContentFormat; label: string; icon: React.ComponentType<{ className?: string }>; color: string }[] = [
   { id: "linkedin", label: "LinkedIn", icon: Linkedin, color: "text-primary" },
   { id: "instagram", label: "Instagram", icon: Instagram, color: "text-coral" },
   { id: "tiktok", label: "TikTok", icon: Video, color: "text-foreground" },
@@ -23,13 +25,13 @@ const FORMATS: { id: Format; label: string; icon: React.ComponentType<{ classNam
 
 interface Props {
   experience: Experience | null;
-  initialFormat?: Format;
+  initialFormat?: ContentFormat;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
 export const ContentStudioModal = ({ experience, initialFormat = "linkedin", open, onOpenChange }: Props) => {
-  const [format, setFormat] = useState<Format>(initialFormat);
+  const [format, setFormat] = useState<ContentFormat>(initialFormat);
   const [toneValue, setToneValue] = useState<number[]>([20]); // 0 = professional, 100 = casual
   const [text, setText] = useState("");
   const [hashtags, setHashtags] = useState<string[]>([]);
@@ -43,26 +45,17 @@ export const ContentStudioModal = ({ experience, initialFormat = "linkedin", ope
     setText("");
     setHashtags([]);
     try {
-      const { data, error } = await supabase.functions.invoke("generate-content", {
-        body: { experience, format, tone },
-      });
-      if (error) {
-        // supabase-js wraps non-2xx into error; surface message
-        const msg = (error as { message?: string }).message ?? "Failed to generate";
-        if (msg.includes("429")) toast.error("Too many requests — try again in a moment.");
-        else if (msg.includes("402")) toast.error("AI credits exhausted. Add credits in Settings → Workspace.");
-        else toast.error(msg);
-        return;
-      }
-      if (data?.error) {
-        toast.error(data.error);
-        return;
-      }
-      setText(data?.text ?? "");
-      setHashtags(Array.isArray(data?.hashtags) ? data.hashtags : []);
+      const data = await generateExperienceContent({ experience, format, tone });
+      setText(data.text);
+      setHashtags(data.hashtags);
       progressionStore.grantContentGenerated(experience.id, format);
+      toast.success("Draft ready — edit and share when you like ✨");
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Something went wrong");
+      if (e instanceof GenerateContentError) {
+        toast.error(e.message, { duration: e.status === 429 ? 6000 : 5000 });
+      } else {
+        toast.error(e instanceof Error ? e.message : "Something went wrong");
+      }
     } finally {
       setLoading(false);
     }

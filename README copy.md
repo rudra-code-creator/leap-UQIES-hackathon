@@ -53,9 +53,13 @@ Copy or create a `.env` file in the project root with your Supabase project valu
 VITE_SUPABASE_PROJECT_ID="your-project-id"
 VITE_SUPABASE_PUBLISHABLE_KEY="your-anon-key"
 VITE_SUPABASE_URL="https://your-project.supabase.co"
+
+# Content Studio (OpenRouter — free tier models work)
+VITE_OPENROUTER_API_KEY="your-openrouter-key"
+# Optional: VITE_OPENROUTER_MODEL="meta-llama/llama-3.2-3b-instruct:free"
 ```
 
-The app runs without a working Supabase backend for most pages; only features that invoke Supabase (e.g. content generation) need valid credentials.
+Get a free OpenRouter key at [openrouter.ai/keys](https://openrouter.ai/keys). **Content Studio** requires `VITE_OPENROUTER_API_KEY`; other pages run without it.
 
 ### 3. Start the dev server
 
