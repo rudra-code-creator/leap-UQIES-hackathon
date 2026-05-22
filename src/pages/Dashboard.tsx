@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Jumpy } from "@/components/Jumpy";
 import { mockChecklist, mockNews, mockPathways, mockUser } from "@/lib/mock-data";
+import { progressionStore, useProgression } from "@/lib/progression-store";
 import { cn } from "@/lib/utils";
 
 const steps = ["Chose path", "Applied", "Waiting for offer", "Preparing to move"];
@@ -11,6 +12,8 @@ const currentStep = 1;
 
 const Dashboard = () => {
   const plan = mockPathways[0];
+  const { roadmapTaskState, xp, level, streakDays } = useProgression();
+  const checklistDone = mockChecklist.filter((t) => roadmapTaskState[t.id] ?? t.done).length;
 
   return (
     <div className="container py-8 md:py-10">
@@ -20,7 +23,12 @@ const Dashboard = () => {
           <h1 className="mt-1 font-display text-3xl font-black md:text-4xl">
             Welcome back, {mockUser.firstName} 🐸
           </h1>
-          <p className="text-sm text-muted-foreground">You're in the <span className="font-bold text-foreground">Application</span> phase. Keep hopping!</p>
+          <p className="text-sm text-muted-foreground">
+            You're in the <span className="font-bold text-foreground">Application</span> phase. Keep hopping!
+          </p>
+          <p className="mt-1 text-xs font-bold text-muted-foreground">
+            Lvl {level} · {xp.toLocaleString()} XP · {streakDays}-day streak
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm"><Bell className="h-4 w-4" /> 3 updates</Button>
@@ -78,20 +86,26 @@ const Dashboard = () => {
         </Card>
 
         {/* Checklist */}
-        <Card title="Checklist" emoji="✅" action={<span className="text-xs font-bold text-muted-foreground">{mockChecklist.filter(t => t.done).length}/{mockChecklist.length} done</span>}>
+        <Card title="Checklist" emoji="✅" action={<span className="text-xs font-bold text-muted-foreground">{checklistDone}/{mockChecklist.length} done</span>}>
           <ul className="mt-3 space-y-2">
-            {mockChecklist.map((t) => (
+            {mockChecklist.map((t) => {
+              const checked = roadmapTaskState[t.id] ?? t.done;
+              return (
               <li key={t.id} className="flex items-center justify-between rounded-xl border-2 border-border bg-background px-3 py-2">
                 <div className="flex items-center gap-3">
-                  <Checkbox checked={t.done} />
-                  <span className={cn("text-sm font-semibold", t.done && "text-muted-foreground line-through")}>{t.task}</span>
+                  <Checkbox
+                    checked={checked}
+                    onCheckedChange={(v) => progressionStore.toggleRoadmapTask(t.id, v === true)}
+                  />
+                  <span className={cn("text-sm font-semibold", checked && "text-muted-foreground line-through")}>{t.task}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  {t.urgent && !t.done && <span className="rounded-full bg-coral/15 px-2 py-0.5 text-[10px] font-bold uppercase text-coral">Urgent</span>}
+                  {t.urgent && !checked && <span className="rounded-full bg-coral/15 px-2 py-0.5 text-[10px] font-bold uppercase text-coral">Urgent</span>}
                   <span className="text-xs text-muted-foreground">{t.due}</span>
                 </div>
               </li>
-            ))}
+            );
+            })}
           </ul>
         </Card>
 

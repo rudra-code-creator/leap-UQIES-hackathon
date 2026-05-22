@@ -7,6 +7,7 @@ import { Jumpy } from "@/components/Jumpy";
 import { JumpyNudge } from "@/components/JumpyNudge";
 import { mockRoadmap, type RoadmapPhase } from "@/lib/mock-data";
 import { useExperiences } from "@/lib/experiences-store";
+import { progressionStore, useProgression } from "@/lib/progression-store";
 import { cn } from "@/lib/utils";
 
 const Roadmap = () => {
@@ -144,36 +145,41 @@ const Roadmap = () => {
             <Module
               title="Module 1 · LinkedIn Foundations"
               items={[
-                { label: "Professional headshot uploaded", done: true },
-                { label: "Headline optimized (not just 'Student at X')", done: true },
-                { label: "About section tells your story", done: false },
-                { label: "Custom LinkedIn URL set", done: false },
-                { label: "5+ recommendations received", done: false },
+                { id: "m1-0", label: "Professional headshot uploaded", done: true },
+                { id: "m1-1", label: "Headline optimized (not just 'Student at X')", done: true },
+                { id: "m1-2", label: "About section tells your story", done: false },
+                { id: "m1-3", label: "Custom LinkedIn URL set", done: false },
+                { id: "m1-4", label: "5+ recommendations received", done: false },
               ]}
             />
             <Module
               title="Module 2 · Content Strategy"
               items={[
-                { label: "First post published", done: true },
-                { label: "Consistent posting (2-4x / month)", done: false },
-                { label: "Engaged with 10+ industry posts", done: false },
-                { label: "Joined 3+ relevant LinkedIn groups", done: false },
+                { id: "m2-0", label: "First post published", done: true },
+                { id: "m2-1", label: "Consistent posting (2-4x / month)", done: false },
+                { id: "m2-2", label: "Engaged with 10+ industry posts", done: false },
+                { id: "m2-3", label: "Joined 3+ relevant LinkedIn groups", done: false },
               ]}
             />
             <Module
               title="Module 3 · Thought Leadership"
               items={[
-                { label: "Shared a unique perspective post", done: false },
-                { label: "Commented meaningfully on industry trends", done: false },
-                { label: "Published a LinkedIn article", done: false },
+                { id: "m3-0", label: "Shared a unique perspective post", done: false },
+                { id: "m3-1", label: "Commented meaningfully on industry trends", done: false },
+                { id: "m3-2", label: "Published a LinkedIn article", done: false },
               ]}
             />
             <Module
               title="Module 4 · Portfolio Building"
               items={[
-                { label: `${experiences.length}+ experiences documented`, done: experiences.length >= 5 },
-                { label: "Created visual portfolio page", done: false },
-                { label: "Shared portfolio link in bio", done: false },
+                {
+                  id: "m4-0",
+                  label: `${experiences.length}+ experiences documented`,
+                  done: experiences.length >= 5,
+                  readOnly: true,
+                },
+                { id: "m4-1", label: "Created visual portfolio page", done: false },
+                { id: "m4-2", label: "Shared portfolio link in bio", done: false },
               ]}
             />
           </div>
@@ -184,7 +190,9 @@ const Roadmap = () => {
 };
 
 const PhaseCard = ({ phase, index }: { phase: RoadmapPhase; index: number }) => {
-  const done = phase.tasks.filter((t) => t.done).length;
+  const { roadmapTaskState } = useProgression();
+  const isDone = (taskId: string, fallback: boolean) => roadmapTaskState[taskId] ?? fallback;
+  const done = phase.tasks.filter((t) => isDone(t.id, t.done)).length;
   return (
     <Collapsible defaultOpen={phase.status === "current"}>
       <article
@@ -220,15 +228,23 @@ const PhaseCard = ({ phase, index }: { phase: RoadmapPhase; index: number }) => 
               <div className="text-sm font-semibold text-foreground">{phase.encouragement}</div>
             </div>
             <ul className="space-y-2">
-              {phase.tasks.map((t) => (
-                <li key={t.id} className="flex items-center justify-between rounded-xl border-2 border-border bg-background px-3 py-2.5">
-                  <div className="flex items-center gap-3">
-                    <Checkbox checked={t.done} />
-                    <span className={cn("text-sm font-semibold", t.done && "text-muted-foreground line-through")}>{t.label}</span>
-                  </div>
-                  {t.due && <span className="text-xs text-muted-foreground">{t.due}</span>}
-                </li>
-              ))}
+              {phase.tasks.map((t) => {
+                const checked = isDone(t.id, t.done);
+                return (
+                  <li key={t.id} className="flex items-center justify-between rounded-xl border-2 border-border bg-background px-3 py-2.5">
+                    <div className="flex items-center gap-3">
+                      <Checkbox
+                        checked={checked}
+                        onCheckedChange={(v) => progressionStore.toggleRoadmapTask(t.id, v === true)}
+                      />
+                      <span className={cn("text-sm font-semibold", checked && "text-muted-foreground line-through")}>
+                        {t.label}
+                      </span>
+                    </div>
+                    {t.due && <span className="text-xs text-muted-foreground">{t.due}</span>}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </CollapsibleContent>
@@ -276,19 +292,39 @@ const MetricCard = ({
   </div>
 );
 
-const Module = ({ title, items }: { title: string; items: { label: string; done: boolean }[] }) => {
-  const done = items.filter((i) => i.done).length;
+const Module = ({
+  title,
+  items,
+}: {
+  title: string;
+  items: { id: string; label: string; done: boolean; readOnly?: boolean }[];
+}) => {
+  const { roadmapTaskState } = useProgression();
+  const resolved = items.map((item) => ({
+    ...item,
+    checked: item.readOnly ? item.done : (roadmapTaskState[`brand-${item.id}`] ?? item.done),
+  }));
+  const doneCount = resolved.filter((i) => i.checked).length;
+
   return (
     <div className="rounded-3xl border-2 border-border bg-surface p-5">
       <div className="flex items-center justify-between">
         <h3 className="font-display text-base font-extrabold">{title}</h3>
-        <span className="text-xs font-bold text-muted-foreground">{done}/{items.length}</span>
+        <span className="text-xs font-bold text-muted-foreground">
+          {doneCount}/{items.length}
+        </span>
       </div>
       <ul className="mt-3 space-y-2">
-        {items.map((item, i) => (
-          <li key={i} className="flex items-center gap-2 text-sm">
-            <Checkbox checked={item.done} />
-            <span className={cn(item.done && "text-muted-foreground line-through")}>{item.label}</span>
+        {resolved.map((item) => (
+          <li key={item.id} className="flex items-center gap-2 text-sm">
+            <Checkbox
+              checked={item.checked}
+              disabled={item.readOnly}
+              onCheckedChange={(v) =>
+                progressionStore.toggleRoadmapTask(`brand-${item.id}`, v === true)
+              }
+            />
+            <span className={cn(item.checked && "text-muted-foreground line-through")}>{item.label}</span>
           </li>
         ))}
       </ul>

@@ -6,6 +6,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { useProgression } from "@/lib/progression-store";
 
 const links = [
   { to: "/dashboard", label: "Dashboard" },
@@ -18,6 +19,7 @@ const links = [
 export const Navbar = () => {
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const { level } = useProgression();
 
   const linkCls = ({ isActive }: { isActive: boolean }) =>
     cn(
@@ -52,7 +54,7 @@ export const Navbar = () => {
           <ThemeToggle />
           <div className="hidden items-center gap-2 rounded-full border-2 border-border bg-surface px-3 py-1.5 lg:flex">
             <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Lvl</span>
-            <span className="font-display text-sm font-black">4</span>
+            <span className="font-display text-sm font-black">{level}</span>
           </div>
           <Link to="/about-me">
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary font-display text-sm font-black text-foreground">

@@ -7,6 +7,7 @@ import { Slider } from "@/components/ui/slider";
 import { Jumpy } from "@/components/Jumpy";
 import { supabase } from "@/integrations/supabase/client";
 import { experiencesStore, type Experience } from "@/lib/experiences-store";
+import { progressionStore } from "@/lib/progression-store";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -59,6 +60,7 @@ export const ContentStudioModal = ({ experience, initialFormat = "linkedin", ope
       }
       setText(data?.text ?? "");
       setHashtags(Array.isArray(data?.hashtags) ? data.hashtags : []);
+      progressionStore.grantContentGenerated(experience.id, format);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Something went wrong");
     } finally {
