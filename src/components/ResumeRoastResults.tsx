@@ -138,20 +138,20 @@ export function ResumeRoastResults({
 
         <div className="rounded-2xl border-2 border-border bg-background p-4 space-y-3">
           <div>
-            <h3 className="font-display text-sm font-black text-foreground">Skill Proficiency</h3>
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <h3 className="font-display text-base font-black text-foreground">Skill Proficiency</h3>
+            <p className="text-sm text-muted-foreground mt-0.5">
               Inferred skill levels from your resume content
             </p>
           </div>
           <ChartContainer config={skillsChartConfig} className="mx-auto h-[280px] w-full">
             <BarChart data={analysis.skills} layout="vertical" margin={{ left: 8, right: 16, top: 8, bottom: 8 }}>
               <CartesianGrid horizontal={false} strokeDasharray="3 3" />
-              <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 10 }} />
+              <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 12 }} />
               <YAxis
                 type="category"
                 dataKey="name"
-                width={100}
-                tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
+                width={112}
+                tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
               />
               <Bar dataKey="level" fill="var(--color-level)" radius={[0, 4, 4, 0]} maxBarSize={18} />
               <ChartTooltip content={<ChartTooltipContent />} />

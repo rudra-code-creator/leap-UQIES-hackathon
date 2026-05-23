@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { MilestoneGamePath } from "@/components/MilestoneGamePath";
+import { RoadmapAlumniSection } from "@/components/RoadmapAlumniSection";
 import { JumpyNudge } from "@/components/JumpyNudge";
 import { useExperiences } from "@/lib/experiences-store";
 import { useToast } from "@/hooks/use-toast";
@@ -181,49 +182,14 @@ const Roadmap = () => {
 
             {/* Milestones Content — game-style quest path */}
             <TabsContent value="milestones" className="mt-6 space-y-6 focus-visible:outline-none">
-              <MilestoneGamePath milestones={milestones} onToggle={toggleMilestone} />
-
-                  <motion.ul layout className="space-y-2">
-                    {milestones
-                      .filter(m => m.phase === phase)
-                      .map((m) => (
-                        <motion.li
-                          layout
-                          key={m.id}
-                          whileHover={{ scale: 1.01, x: 2 }}
-                          className={cn(
-                            "flex items-start justify-between rounded-xl border-2 p-3.5 bg-background hover:border-foreground/20 transition-all",
-                            m.done ? "border-border/40 opacity-70" : "border-border shadow-sm",
-                          )}
-                        >
-                          <div className="flex items-start gap-3 flex-1 min-w-0">
-                            <div className="pt-0.5">
-                              <Checkbox
-                                checked={m.done}
-                                onCheckedChange={(v) => setMilestoneDone(m.id, v === true)}
-                              />
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => setMilestoneDone(m.id, !m.done)}
-                              className="min-w-0 flex-1 text-left cursor-pointer"
-                            >
-                              <span className={cn("text-sm font-bold leading-snug block text-foreground", m.done && "text-muted-foreground line-through")}>
-                                {m.title}
-                              </span>
-                              <span className="text-xs text-muted-foreground block mt-0.5">{m.desc}</span>
-                            </button>
-                          </div>
-                          {m.aiSuggested && (
-                            <span className="shrink-0 ml-3 inline-flex items-center gap-1 rounded-full bg-coral/10 border border-coral/20 px-2 py-0.5 text-[9px] font-black text-coral uppercase">
-                              <Sparkles className="h-2.5 w-2.5" /> AI Custom
-                            </span>
-                          )}
-                        </motion.li>
-                      ))}
-                  </motion.ul>
-                </motion.div>
-              </motion.section>
+              <MilestoneGamePath
+                milestones={milestones}
+                onToggle={(id, done) => {
+                  const current = milestones.find((m) => m.id === id);
+                  if (current) setMilestoneDone(id, done ?? !current.done);
+                }}
+              />
+              <RoadmapAlumniSection />
             </TabsContent>
 
             {/* Time Planner Content */}

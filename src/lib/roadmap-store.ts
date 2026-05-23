@@ -29,7 +29,23 @@ const DEFAULT_MILESTONES: Milestone[] = [
   { id: "m-4", title: "Integrate Mistral AI API into a project", desc: "Implement real AI queries and chat interfaces.", done: false, phase: "Phase 2: Building", aiSuggested: true },
   { id: "m-5", title: "Optimize online professional portfolio", desc: "Publish logged wins and share custom bio link.", done: false, phase: "Phase 3: Launching", aiSuggested: true },
   { id: "m-6", title: "Apply for Summer Software Internships", desc: "Submit resume and portfolio to matched tech companies.", done: false, phase: "Phase 3: Launching", aiSuggested: false },
+  { id: "m-7", title: "Attend 3 industry networking events", desc: "Meet peers and professionals; log contacts in Journey Log.", done: false, phase: "Phase 4: Connecting", aiSuggested: false },
+  { id: "m-8", title: "Book 5 informational interviews", desc: "Reach out to alumni or speakers for 20-minute career chats.", done: false, phase: "Phase 4: Connecting", aiSuggested: false },
+  { id: "m-9", title: "Ship an open-source or research contribution", desc: "One meaningful PR, lab output, or published case study.", done: false, phase: "Phase 5: Mastering", aiSuggested: false },
+  { id: "m-10", title: "Earn a role-relevant certification", desc: "Cloud, UX, data, or security cert aligned to your target job.", done: false, phase: "Phase 5: Mastering", aiSuggested: true },
+  { id: "m-11", title: "Mentor a junior student or run a workshop", desc: "Teach something you learned — builds leadership signal.", done: false, phase: "Phase 6: Leading", aiSuggested: false },
+  { id: "m-12", title: "Negotiate and accept a graduate offer", desc: "Compare offers, confirm start date, and celebrate the leap.", done: false, phase: "Phase 6: Leading", aiSuggested: false },
 ];
+
+function mergeWithDefaultMilestones(stored: Milestone[]): Milestone[] {
+  const byId = new Map(stored.map((m) => [m.id, m]));
+  for (const def of DEFAULT_MILESTONES) {
+    if (!byId.has(def.id)) byId.set(def.id, def);
+  }
+  const knownIds = new Set(DEFAULT_MILESTONES.map((d) => d.id));
+  const extras = stored.filter((m) => !knownIds.has(m.id));
+  return [...DEFAULT_MILESTONES.map((d) => byId.get(d.id)!), ...extras];
+}
 
 const DEFAULT_PLANNER: PlannerTask[] = [
   { id: "pt-1", task: "Review React state management hooks", timeframe: "week", dueDate: "In 2 days", done: false },
@@ -84,8 +100,10 @@ function loadLocalMilestones(): Milestone[] {
   try {
     const raw = localStorage.getItem(MILESTONES_STORAGE_KEY);
     if (!raw) return DEFAULT_MILESTONES;
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) && parsed.length ? parsed : DEFAULT_MILESTONES;
+    const parsed = JSON.parse(raw) as Milestone[];
+    return Array.isArray(parsed) && parsed.length
+      ? mergeWithDefaultMilestones(parsed)
+      : DEFAULT_MILESTONES;
   } catch {
     return DEFAULT_MILESTONES;
   }

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import type { Milestone } from "@/lib/roadmap-store";
+import { ROADMAP_PHASE_ORDER } from "@/lib/roadmap-alumni";
 
 const PHASE_META: Record<
   string,
@@ -39,6 +40,30 @@ const PHASE_META: Record<
     nodeBorder: "border-[#c44d3a]",
     cardBg: "bg-[#ffe0d8]",
     pathColor: "#dc6f63",
+  },
+  "Phase 4: Connecting": {
+    emoji: "🤝",
+    subtitle: "World 4",
+    nodeBg: "bg-[#c4b5fd]",
+    nodeBorder: "border-[#5b21b6]",
+    cardBg: "bg-[#ede9fe]",
+    pathColor: "#7c3aed",
+  },
+  "Phase 5: Mastering": {
+    emoji: "🎯",
+    subtitle: "World 5",
+    nodeBg: "bg-[#93c5fd]",
+    nodeBorder: "border-[#1d4ed8]",
+    cardBg: "bg-[#dbeafe]",
+    pathColor: "#2563eb",
+  },
+  "Phase 6: Leading": {
+    emoji: "👑",
+    subtitle: "World 6",
+    nodeBg: "bg-[#fde047]",
+    nodeBorder: "border-[#a16207]",
+    cardBg: "bg-[#fef9c3]",
+    pathColor: "#ca8a04",
   },
 };
 
@@ -99,10 +124,11 @@ interface MilestoneGamePathProps {
 
 export function MilestoneGamePath({ milestones, onToggle }: MilestoneGamePathProps) {
   const phases = useMemo(() => {
-    const order: string[] = [];
-    milestones.forEach((m) => {
-      if (!order.includes(m.phase)) order.push(m.phase);
-    });
+    const extraPhases = [...new Set(milestones.map((m) => m.phase))].filter(
+      (p) => !ROADMAP_PHASE_ORDER.includes(p as (typeof ROADMAP_PHASE_ORDER)[number]),
+    );
+    const order = [...ROADMAP_PHASE_ORDER, ...extraPhases];
+
     return order.map((name, index) => {
       const phaseMilestones = milestones.filter((m) => m.phase === name);
       const doneCount = phaseMilestones.filter((m) => m.done).length;

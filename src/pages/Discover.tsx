@@ -8,6 +8,29 @@ import { motion } from "framer-motion";
 import { AnimatedPage } from "@/components/AnimatedPage";
 import { useDiscoverStates, discoverStore } from "@/lib/discover-store";
 
+type RoadmapLevel = "exploration" | "building" | "launching";
+
+const ROADMAP_LEVEL_TAGS: Record<
+  RoadmapLevel,
+  { label: string; emoji: string; badgeClass: string }
+> = {
+  exploration: {
+    label: "Exploration",
+    emoji: "🌱",
+    badgeClass: "bg-[#d4ffe8] border-[#1a6b3c] text-[#1a6b3c]",
+  },
+  building: {
+    label: "Building",
+    emoji: "🔨",
+    badgeClass: "bg-[#fff3c4] border-[#b8860b] text-[#8a6500]",
+  },
+  launching: {
+    label: "Launching",
+    emoji: "🚀",
+    badgeClass: "bg-[#ffe0d8] border-[#c44d3a] text-[#9a3d30]",
+  },
+};
+
 interface Community {
   id: string;
   name: string;
@@ -15,6 +38,7 @@ interface Community {
   members: number;
   type: string;
   category: string;
+  roadmapLevel: RoadmapLevel;
   joined: boolean;
 }
 
@@ -54,6 +78,7 @@ const Discover = () => {
         members: 1420,
         type: "Campus Club",
         category: "Tech & Coding",
+        roadmapLevel: "exploration" as const,
       },
       {
         id: "c-2",
@@ -62,6 +87,7 @@ const Discover = () => {
         members: 580,
         type: "Local Meetup",
         category: "Artificial Intelligence",
+        roadmapLevel: "building" as const,
       },
       {
         id: "c-3",
@@ -70,6 +96,7 @@ const Discover = () => {
         members: 890,
         type: "Professional Network",
         category: "Career Growth",
+        roadmapLevel: "launching" as const,
       },
       {
         id: "c-4",
@@ -78,6 +105,7 @@ const Discover = () => {
         members: 410,
         type: "Creative Circle",
         category: "UI/UX Design",
+        roadmapLevel: "building" as const,
       },
     ];
 
@@ -216,7 +244,10 @@ const Discover = () => {
 
   const filteredCommunities = communities.filter(
     (c) =>
-      (searchTerm === "" || c.name.toLowerCase().includes(searchTerm.toLowerCase()) || c.desc.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      (searchTerm === "" ||
+        c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        c.desc.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        ROADMAP_LEVEL_TAGS[c.roadmapLevel].label.toLowerCase().includes(searchTerm.toLowerCase())) &&
       (activeInterestFilter === "All" || c.category === activeInterestFilter)
   );
 
@@ -317,14 +348,31 @@ const Discover = () => {
                   className="rounded-3xl border-2 border-border bg-surface p-6 shadow-sm flex flex-col justify-between"
                 >
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="rounded-full bg-secondary/15 border border-secondary/20 px-3 py-1 text-[10px] font-extrabold text-foreground uppercase tracking-wide">
-                        {c.type}
-                      </span>
-                      <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1">
+                    <motion.div
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ type: "spring", stiffness: 120, damping: 14 }}
+                      className="flex items-center justify-between gap-2"
+                    >
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="rounded-full bg-secondary/15 border border-secondary/20 px-3 py-1 text-[10px] font-extrabold text-foreground uppercase tracking-wide">
+                          {c.type}
+                        </span>
+                        <span
+                          className={cn(
+                            "rounded-full border px-3 py-1 text-[10px] font-extrabold uppercase tracking-wide inline-flex items-center gap-1",
+                            ROADMAP_LEVEL_TAGS[c.roadmapLevel].badgeClass,
+                          )}
+                          title={`Best matched to your ${ROADMAP_LEVEL_TAGS[c.roadmapLevel].label} roadmap phase`}
+                        >
+                          {ROADMAP_LEVEL_TAGS[c.roadmapLevel].emoji}{" "}
+                          {ROADMAP_LEVEL_TAGS[c.roadmapLevel].label}
+                        </span>
+                      </div>
+                      <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1 shrink-0">
                         <Users className="h-3.5 w-3.5" /> {c.members} members
                       </span>
-                    </div>
+                    </motion.div>
                     <div>
                       <h3 className="font-display text-xl font-extrabold text-foreground">{c.name}</h3>
                       <span className="text-xs font-bold text-muted-foreground uppercase">{c.category}</span>
